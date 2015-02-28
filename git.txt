@@ -1,0 +1,82 @@
+http://www.cnblogs.com/wangkongming/p/3821305.html
+http://www.liaoxuefeng.com
+http://codeigniter.org.cn/
+
+###### 解决git bash 和Vim 在window下中文乱码问题 ############
+1、vim的，直接修改git自带的vim下的vimrc配置文件即可。
+	在git安装目录\share\vim\vimrc 文件中加入：
+	set fileencodings=utf-8,ucs-bom,cp936,big5 
+	set fileencoding=utf-8 
+	set termencoding=gbk
+
+2. 编辑 git-completion.bash 文件：$ vi git-completion.bash
+    最下面添加
+	alias ls='ls --show-control-chars --color=auto' #ls能够正常显示中文  
+ 
+
+3. 编辑 inputrc 文件：$ vi inputrc
+	修改 output-meta 和 convert-meta 属性值
+	set output-meta on #bash中可以正常输入中文  
+	set convert-meta off  
+ 
+
+4. 编辑 profile 文件：$ vi profile
+    最下面添加
+	export LESSHARSET=utf-8  
+ 
+
+5. 重新编译配置文件，使文件生效
+	$ source git-completion.bash
+	$ source inputrc
+	$ source profile
+	
+############### git 学习笔记 ############
+
+1、创建一个空目录 learngit 作为根目录
+
+2、通过 git init 命令把learngit目录变成Git可以管理的仓库：
+
+3、将文件提交仓库进行版本控制
+	3.1 在根目录下编写一个readme.txt文件
+	3.2 用命令 git add 告诉Git，把文件添加到仓库缓存区，如：git add test.txt
+	3.3 用命令 git commit 告诉Git，把文件提交到仓库，如：git commit -m "add test.txt"
+
+4、修改文件内容后运行 git status 命令查看仓库当前的状态，git diff 命令查看具体修改内容，git log (git log --pretty=oneline) 命令查看所有历史记录
+
+5、版本回退
+	5.1 使用 git log 查看提交记录
+	5.2 用 HEAD 表示当前版本，上一个版本就是 HEAD^，上上一个版本就是 HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100
+		退回上一个版本命令 git reset --hard head^;
+	5.3 退回上一个版本后若想恢复最新版本，需要知道版本号 命令：git reset --hard 3628164(版本号，前几位就可以了);
+	5.4 若忘记版本号，用 git reflog 查看每次命令记录
+
+6、撤销修改
+	6.1 撤销工作区的修改，还未提交到缓存区  git checkout -- filename  执行该方法将撤销工作区的修改让工作区跟缓存区保持一致
+	6.2 撤销缓存区的修改，还未提交到仓库 git reset head filename 执行该方法将撤销缓存区的修改，让缓存区跟仓库保持一致，该命令不会改变工作区的代码
+
+7、删除文件
+	7.1 先将已在缓存区但未入库的文件del.txt文件删除
+	7.1.1 确定删除文件：git rm del.txt
+	7.1.2 恢复删除的文件：git checkout -- del.txt
+	7.2 先将版本库中的文件del.txt文件删除
+	7.2.1 确定删除文件：git rm del.txt 然后 git commit -m "删除文件"
+	7.2.2 恢复删除的文件：git checkout -- del.txt
+
+8、远程仓库
+	8.1 设置自己本地git的名称和邮箱 git config --global user.name "Your Name" 和 git config --global user.email "email@example.com"
+	8.2 删除自己的SSH Key：  ssh-keygen -t rsa -C "邮箱地址"  然后一路回车就可以了
+	8.3 在www.github.com中创建一个自己的git远程仓库
+	8.4 在远程仓库账号中添加本地生成的SSH Key
+	8.5 将本地仓库跟远程仓库关联：git remote add origin git@github.com:github中的账号名称/learngit.git（仓库名称）
+	8.6 将本地仓库内容推送到远程仓库：git push -u origin master
+	8.7 从远程仓库中克隆代码：git clone git@github.com:michaelliao/gitskills.git
+
+9、分支管理
+	9.1 创建分支：git branch 分支名称
+	9.2 切换分支：git checkout 分支名称
+	9.3 创建并切换分支：git checkout -b 分支名称
+	9.4 查看当前分支：git branch
+	9.5 将指定的分支合并到当前分支中：git merge 分支名称  或者: git merge --no-ff -m "注释" 分支名称
+	9.6 删除分支：git branch -d 分支名称
+	
+	
