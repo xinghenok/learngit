@@ -1,0 +1,102 @@
+http://bbs.php100.com/simple/?t72148.html
+
+http://www.imagemagick.org/download/binaries/
+
+http://www.yiiframework.com/forum/index.php/topic/7763-求助，怎么设置级联下拉列表？/
+
+http://www.yiiframework.com/extension/yii-debug-toolbar/
+
+http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html
+
+/etc/init.d/httpd restart
+
+yii 数据操作：
+
+查找：
+        $list           = Yii::app()->db
+                            ->createCommand()
+                            ->select('id,name')
+                            ->from('{{fcom}}')
+                            ->where('f.id in (1,2,3)')
+                            ->queryAll();  //查全部
+			    //->queryRow(); 查单条
+			    //->queryScalar(); 获取总数量
+
+联表查询：
+        $row    = Yii::app()->db
+                            ->createCommand()
+                            ->select('p.id,c.name,t.ip')
+                            ->from('{{province}} p')
+                            ->leftjoin('{{city}} c', 'c.provinceid = p.provinceid')
+                            ->leftjoin('{{town}} t', 't.cityid = c.cityid')
+                            ->where('townid=:townid', array(':townid' => 1))
+                            ->queryRow();
+
+
+//添加  
+Yii::app()->db->createCommand()->insert('tbl_user',   
+array(  
+    'username' => 'zhangsan',   
+    'email' => 'zhangsan@zs.com'));  
+
+$sql = "insert into to8to_ask(subject,uid) values('wap测试001',123)";
+$list = Yii::app()->db->createCommand($sql)->execute();
+
+//修改  
+Yii::app()->db->createCommand()->update('tbl_user',   
+array(  
+    'username' => 'Tester'), 'id=:id', array(  
+    ':id' => 3));  
+//删除     
+Yii::app()->db->createCommand()->delete('tbl_user', 'id=:id',   
+array(  
+    ':id' => 2));  
+//查询  
+$users = Yii::app()->db->createCommand()  
+    ->select('*')  
+    ->from('tbl_user')  
+    ->queryAll();  
+var_dump($users);
+
+
+
+1、用Gii生成model和Controller
+2、在Controller中如何使用model中CRUD数据库操作
+	public function actionIndex()
+	{
+        $model = new User('search');
+        $model->unsetAttributes();  //清除数据库中字段默认值
+        $_GET['User']['uid'] = 1;	//获取uid=1的值
+        $model->setAttributes($_GET['User']);
+
+        //$a = User::model()->findByPk(1);    //查找主键等于1的
+        //$gl = $a->user_info->attributes;    //获取关联表中查询出来的值
+
+        $dataProvider = $model->search();	//对象
+        echo '<pre>';
+		foreach($dataProvider->data as $m){
+            print_r($m->attributes);	//转为数组
+        }
+		exit;
+		$this->render('index',array(
+		));
+	}
+3、如何关联表
+    /**
+     * 关联user_info表
+     * @return static
+     */
+    public function getUser_info()
+    {
+        return UserInfo::model()->findByAttributes(array('uid' => $this->uid));
+    }
+
+另一种方法
+$criteria=new CDbCriteria;
+$criteria->select = array('uid', 'username');	//查询字段
+$criteria->compare('username', 'to', true)->compare('uid','4');		//第一个模糊查询 第二个精确查询
+$dataProvider=new CActiveDataProvider('User', array('criteria' => $criteria));  //User模型
+echo '<pre>';
+$dataProvider->pagination->pageVar = 'page';	//设置分页参数
+$dataProvider->pagination->setPageSize(5);		//设置每页信息数
+print_r($dataProvider->getData());exit;
